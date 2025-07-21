@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Page Insights Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="status-bar">
+      <span class="status-label">Status:</span>
+      <span class="status-live">Live</span>
+      <span class="status-label" style="margin-left:2em;">Hook:</span>
+      <span class="status-open">Open</span>
+    </div>
+    <h1> Facebook Page Insights Monitor</h1>
+  </header>
+  <main>
+    {% if events %}
+      {% for e in events %}
+        <div class="card">
+          <div class="message">
+            {{ (e.get('fetched_details', {}).get('message', e.get('message', 'No message')) | replace('GreenWave Innovations', '<span class="highlight">GreenWave Innovations</span>') ) | safe }}
+          </div>
+          <div class="meta">
+            <span><b>Post ID:</b> {{ e.get('post_id', 'N/A') }}</span>
+            <span style="margin-left:2em;"><b>Type:</b> {{ e.get('item', 'N/A') }}</span>
+          </div>
+          <div class="timestamp">
+            <b>Created:</b>
+            {% if e.get('fetched_details', {}).get('created_time') %}
+              {{ e.get('fetched_details', {}).get('created_time') }}
+            {% elif e.get('created_time') %}
+              {{ e.get('created_time') }}
+            {% else %}
+              N/A
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="text-align:center;color:#888;font-size:1.2rem;margin-top:4rem;">
+        No events received yet.
+      </div>
+    {% endif %}
+  </main>
+</body>
+</html>
