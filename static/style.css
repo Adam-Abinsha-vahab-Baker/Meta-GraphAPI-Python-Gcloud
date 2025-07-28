@@ -1,3 +1,21 @@
+/* Type color labels */
+.type-label.type-comment {
+  color: #3498db;
+  font-weight: bold;
+}
+.type-label.type-post {
+  color: #2ecc40;
+  font-weight: bold;
+}
+/* OpenAI Insight styling */
+.insight {
+  background: #222;
+  color: #00bfff;
+  padding: 0.7em 1em;
+  border-radius: 6px;
+  margin-top: 0.7em;
+  font-size: 1.05em;
+}
 body {
   background: #181818;
   color: #f1f1f1;

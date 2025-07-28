@@ -15,6 +15,10 @@
     </div>
     <h1> Facebook Page Insights Monitor</h1>
   </header>
+  <nav style="margin-bottom:2em;">
+    <a href="/events" class="btn">Events</a>
+    <a href="/emails" class="btn">Emails</a>
+  </nav>
   <main>
     {% if events %}
       {% for e in events %}
@@ -24,7 +28,14 @@
           </div>
           <div class="meta">
             <span><b>Post ID:</b> {{ e.get('post_id', 'N/A') }}</span>
-            <span style="margin-left:2em;"><b>Type:</b> {{ e.get('item', 'N/A') }}</span>
+            {% set type = e.get('item', 'N/A') %}
+            <span style="margin-left:2em;">
+              <b>Type:</b>
+              <span class="type-label {% if type == 'comment' %}type-comment{% elif type == 'post' %}type-post{% endif %}">{{ type }}</span>
+            </span>
+            {% if e.get('from', {}).get('name') %}
+              <span style="margin-left:2em;"><b>From:</b> {{ e.get('from', {}).get('name') }}</span>
+            {% endif %}
           </div>
           <div class="timestamp">
             <b>Created:</b>
@@ -36,6 +47,11 @@
               N/A
             {% endif %}
           </div>
+          {% if e.get('openai_insight') %}
+            <div class="insight">
+              <b style="color:#77580a;">Comment:</b> <span style="color:#2ECC40;">{{ e.get('openai_insight') }}</span>
+            </div>
+          {% endif %}
         </div>
       {% endfor %}
     {% else %}

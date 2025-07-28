@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Log</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="status-bar">
+            <span class="status-label">Status:</span>
+            <span class="status-live">Live</span>
+            <span class="status-label" style="margin-left:2em;">Hook:</span>
+            <span class="status-open">Open</span>
+        </div>
+        <h1>Email Log</h1>
+    </header>
+    <main>
+        <nav style="margin-bottom:2em;">
+            <a href="/events">Events</a> |
+            <a href="/emails">Emails</a>
+        </nav>
+        {% if emails %}
+            {% for email in emails %}
+                <div class="card">
+                    <div class="message">
+                        <b>From:</b> {{ email.sender }}<br>
+                        <b>Subject:</b> {{ email.subject }}
+                    </div>
+                    <div class="meta">
+                        <b>Received:</b> <span class="timestamp">{{ email.created_time }}</span>
+                    </div>
+                    <div class="message" style="color:#00bfff;">
+                        <b>Email Body:</b><br>
+                        {{ email.body | e }}
+                    </div>
+                    {% if email.ai_reply %}
+                        <div class="insight">
+                            <b style="color:#77580a;">Reply:</b> <span style="color:#2ECC40;">{{ email.ai_reply }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align:center;color:#888;font-size:1.2rem;margin-top:4rem;">
+                No emails received yet.
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>
