@@ -22,8 +22,8 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # ──────────────── EMAIL REPLY CONFIG ────────────────
-EMAIL_ADDRESS = "sahfsoftware8@gmail.com"
-APP_PASSWORD = "vveglqdumjqgmqhv"
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+APP_PASSWORD = os.getenv("APP_PASSWORD")
 
 IMAP_SERVER = "imap.gmail.com"
 IMAP_PORT = 993
@@ -35,7 +35,7 @@ OPENAI_MODEL = "gpt-4o-mini"
 
 def get_latest_email(prefer_unread=True):
     imap = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
-    imap.login(EMAIL_ADDRESS, APP_PASSWORD)
+    imap.login(EMAIL_ADDRESS, APP_PASSWORD) # type: ignore
     imap.select("inbox")
 
     status, messages = imap.search(None, 'ALL')
@@ -131,7 +131,8 @@ def send_reply(to_email, subject, reply_text):
     smtp.quit()
 
 # ──────────────── FLASK APP INIT ────────────────
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/app2/static')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///events.db'
 db = SQLAlchemy(app)
 
@@ -177,7 +178,7 @@ class Event(db.Model):
         self.commented = commented
 
 # ──────────────────────────────
-@app.before_request
+
 def create_tables():
     db.create_all()
 
@@ -370,6 +371,7 @@ def show_emails():
 
 # ──────────────── MAIN ────────────────
 if __name__ == "__main__":
-    # Start email check loop in background thread
+    with app.app_context():
+        db.create_all()
     threading.Thread(target=email_check_loop, args=(60,), daemon=True).start()
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=8080,host="0.0.0.0")
